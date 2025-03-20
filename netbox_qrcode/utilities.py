@@ -1,4 +1,5 @@
 import base64
+import math
 import qrcode
 import sys
 from io import BytesIO
@@ -135,7 +136,14 @@ def concat_logo(qr, logo):
     if logo.mode != 'RGBA':
         logo = logo.convert('RGBA')
 
-    logo = logo.resize((qr.size[0]*2//9, qr.size[1]*2//9))
+    logo_ratio = math.floor(logo.size[0] / logo.size[1])
+
+    max_size = qr.size[0]*2//9
+
+    if logo_ratio > 1:
+        logo = logo.resize((max_size, max_size//logo_ratio))
+    else:
+        logo = logo.resize((max_size*logo_ratio, max_size))
     
     #superimpose logo on centre of qr
     width, height = qr.size
