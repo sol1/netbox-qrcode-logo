@@ -81,7 +81,7 @@ def get_concat(im1, im2, direction='right'):
             'Invalid direction "{}" (must be one of "left", "right", "up", or "down")'.format(direction)
         )
 
-    dst = Image.new('L', (width, height), 'white')
+    dst = Image.new('RGBA', (width, height), 'white')
 
     if direction == 'right' or direction == 'left':
         if im1.height > im2.height:
@@ -120,3 +120,25 @@ def get_concat(im1, im2, direction='right'):
     dst.paste(im2, (im2_x, im2_y))
 
     return dst
+
+def get_logo(**kwargs):
+    #red square
+    img = Image.new('RGBA', (50*kwargs['box_size'], 50*kwargs['box_size']), (255, 0, 0))
+    return img
+
+def concat_logo(qr, logo):
+    # Ensure QR code is in RGBA mode
+    if qr.mode != 'RGBA':
+        qr = qr.convert('RGBA')
+
+    # Ensure logo is in RGBA mode
+    if logo.mode != 'RGBA':
+        logo = logo.convert('RGBA')
+
+    logo = logo.resize((qr.size[0]*2//9, qr.size[1]*2//9))
+    
+    #superimpose logo on centre of qr
+    width, height = qr.size
+    logo_width, logo_height = logo.size
+    qr.paste(logo, (width//2 - logo_width//2, height//2 - logo_height//2), logo)
+    return qr

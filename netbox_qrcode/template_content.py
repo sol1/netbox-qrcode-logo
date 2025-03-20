@@ -3,10 +3,13 @@ from packaging import version
 from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
 from django.template import engines
+from django.contrib.contenttypes.models import ContentType  # Import ContentType
 
 from netbox.plugins import PluginTemplateExtension
+from extras.models import ImageAttachment  # Import ImageAttachment
+from PIL import Image  # Import Image from Pillow
 
-from .utilities import get_img_b64, get_qr, get_qr_text, get_concat
+from .utilities import get_img_b64, get_qr, get_qr_text, get_concat, get_logo, concat_logo
 
 
 class QRCode(PluginTemplateExtension):
@@ -29,6 +32,20 @@ class QRCode(PluginTemplateExtension):
                 qr_args[k.replace('qr_', '')] = v
 
         qr_img = get_qr(url, **qr_args)
+        if config.get('with_logo'):
+            logo_img = None
+            try:
+                logo_img_attachment = ImageAttachment.objects.filter(
+                    name='qr_logo', 
+                    object_type_id=ContentType.objects.get_for_model(obj.__class__).id,
+                    object_id=obj.id
+                ).first()
+                if logo_img_attachment:
+                    logo_img = Image.open(logo_img_attachment.image.path)
+                    qr_img = concat_logo(qr_img, logo_img)
+            except Exception as e:
+                print(f"Error loading logo: {e}")
+            
         if config.get('with_text'):
             if config.get('text_template'):
                 django_engine = engines["django"]
