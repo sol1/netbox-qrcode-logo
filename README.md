@@ -51,6 +51,7 @@ The following options are available:
 * `text_fields`: List of String (default ['name']). Text fields of an object that will be added as text label to QR image. It's possible to use custom field values.
 * `font`: String (default TahomaBold) Font name for text label ( Some font include in package, see fonts dir).
 * `text_location`: Where to render the text, relative to the QR code.  Valid values are `"right"` (default), `"left"`", `"up"`, and `"down"`.
+* `with_logo`: Boolean (default False). Enables logos to be shown at center of QR code. Currently uses object's attached_image with name `qr_logo`.
 * `custom_text`: String or None (default None) additional text label to QR code image (will be added after text_fields).
 * `qr_version`: Integer (default 1) parameter is an integer from 1 to 40 that controls the size of
 the QR Code (the smallest, version 1, is a 21x21 matrix).
@@ -85,6 +86,7 @@ PLUGINS_CONFIG = {
         'font_size': 12, # If the value is 0 or the line does not exist, then the text is automatically adjusted
         'custom_text': 'Property of SomeCompany\ntel.8.800333554-CALL',
         'text_location': 'up',
+        'with_logo': True,
         'qr_version': 1,
         'qr_error_correction': 0,
         'qr_box_size': 4,
@@ -126,3 +128,6 @@ Cable QR code
 
 Device QR code via Jinja2 "text_template" Parameter (Multiline and labeled)
 ![Cable QR Code](docs/img/qrcode_text_template.png)
+
+Device QR code with custom logo
+![Device QR Code](docs/img/qrcode_logo.png)

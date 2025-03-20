@@ -159,7 +159,10 @@ PLUGINS = ["netbox_qrcode"]
 # Each key in the dictionary is the name of an installed plugin and its value is a dictionary of settings.
 PLUGINS_CONFIG = {
     "netbox_qrcode": {
-        'with_logo': True
+        'with_logo': True,
+        'parents': {
+            'device' : ['site']
+        }
     }
 }
 
